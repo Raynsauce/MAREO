@@ -1,7 +1,7 @@
 #pragma once
 #include "Main.h"
 
-class Engine {
+class Engine {	//Engine is to be implemented further
 public:
 	Engine()
 	{
@@ -23,6 +23,8 @@ public:
 		SDL_SetRenderTarget(mainrndr,mainTex);
 		SDL_SetRenderDrawColor(mainrndr,0,0,0,255);
 		SDL_RenderClear(mainrndr);
+
+		
 	}
 public:
 	SDL_Event* mEvent;

@@ -25,7 +25,51 @@ protected:
 	SDL_Rect* cProps;
 };
 
-class Player : protected Camera {	//Engine is to be implemented further
+class Oscillate {
+public:
+	Oscillate()
+	{
+		ixrs = new int;
+		ixps = new int;
+		*ixrs = -1;
+		*ixps = -1;
+	}
+	~Oscillate()
+	{
+		delete ixrs;
+		delete ixps;
+	}
+	
+	inline int rrun()
+	{
+		if(*ixrs <= 0 && brasc == 0){ brasc = !brasc; }
+		if(*ixrs >= 5 && brasc == 1){ brasc = !brasc; }
+		*ixrs += (brasc ? 1 : -1);
+
+		return rspd[*ixrs];
+	}
+	inline int prun()
+	{
+		if(*ixps <= 0 && bpasc == 0){ bpasc = !bpasc; }
+		if(*ixps >= 5 && bpasc == 1){ bpasc = !bpasc; }
+		*ixps += (bpasc ? 1 : -1);
+
+		return pspd[*ixps];
+	}
+
+private:
+	int rspd[5] = { 36,35,36,35,37 }; //run spd
+	int pspd[5] = { 48,47,48,47,49 };	//P spd
+	
+	//indexes for arrays
+	int *ixrs;
+	int *ixps;
+	
+	bool brasc = 1;	//ixrs is ascending
+	bool bpasc = 1;	//ixps is ascending
+};
+
+class Player : protected Camera {
 public:
 	Player()
 	{
@@ -49,6 +93,7 @@ public:
 
 
 		SetPState(STAND | ALIVE);
+		std::cout << STAND << ", " << ALIVE << std::endl;
 		std::cout << ((STAND|ALIVE)) << std::endl;
 	}
 	~Player()
@@ -71,17 +116,18 @@ public:
 		SDL_RenderCopy(mainrndr,s_stand,NULL,rndrRect);
 	}
 
-	const enum {		//6 types of states -> 6 hex places
+	const enum {		//6 types of states -> 6 hex places (?)
 		STAND		= 0x000001, //different types of states don't interfere (in theory)
 		MOVE		= 0x000002,
 		STOP		= 0x000004,
 		THING		= 0x000008,
 		
-		WALK		= 0x000010,
-		RUN			= 0x000020, //Movement
+		WALK		= 0x000010, //Movement
+		RUN			= 0x000020,
 		SPRINT		= 0x000030,
 		TURN		= 0x000040,
 		JUMP		= 0x000050,
+		SWIM		= 0x000060,
 
 		HOLD		= 0x000100, //Actions
 		KICK		= 0x000200,
@@ -94,18 +140,21 @@ public:
 	{
 		pState = (pState | newState);
 	}
+	inline void GetPState(void){
+		std::cout << pState << std::endl;
+	}
 
 	inline void PlayerKeyMoves(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
 	{
 		switch(key.type){
 		case SDL_KEYDOWN:
 			switch(key.keysym.sym){
-			case SDLK_w: diry.movul	= 1;		break;
-			case SDLK_s: diry.movdr	= 1;		break;
-			case SDLK_a: dirx.movul	= 1;		break;
-			case SDLK_d: dirx.movdr	= 1;		break;
-			case SDLK_LCTRL: Sprinting	= 1;	break;
-			case SDLK_RETURN: Center = true;	break;
+			case SDLK_w: diry.movul	= 1;	 break;
+			case SDLK_s: diry.movdr	= 1;	 break;
+			case SDLK_a: dirx.movul	= 1;	 break;
+			case SDLK_d: dirx.movdr	= 1;	 break;
+			case SDLK_LCTRL: Sprinting	= 1; break;
+			case SDLK_RETURN: Center  = 1;	 break;
 			default: break;
 			} break;
 		case SDL_KEYUP:
@@ -115,7 +164,7 @@ public:
 			case SDLK_a: dirx.movul	= 0;	 break;
 			case SDLK_d: dirx.movdr	= 0;	 break;
 			case SDLK_LCTRL: Sprinting	= 0; break;
-			case SDLK_RETURN: Center = false;	break;
+			case SDLK_RETURN: Center = 0;	 break;
 			default: break;
 			} break;
 		case SDL_MOUSEBUTTONDOWN:	switch(mouse.button){ case SDL_BUTTON_LEFT: MouseC = true; break; default: break; } break;
@@ -141,17 +190,18 @@ private:
 	bool Center = false;
 	bool MouseC = false;
 
+	Oscillate osc;
 	int Walk;
 	inline int Run()	//Mario's RUNNING speed oscillates (36, 35, 36, 35, 37) --- AVG = 35.8;
 	{
-		return ((36 + 35 + 36 + 35 + 37)/5);
+		return osc.rrun();
 	}
 	inline int pSpeed()	//Mario's SPRINTING speed also oscillates (48, 47, 48, 47, 49) --- AVG = 47.8
 	{
-		return ((48 + 47 + 48 + 47 + 49)/5);
+		return osc.prun();
 	}
 
-		
+	
 
 	int Vel;	/* gets converted to int anyway */
 
