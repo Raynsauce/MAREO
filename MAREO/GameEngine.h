@@ -19,7 +19,7 @@ public:
 	
 	inline void SetEState(const int& nState)	 { cState = static_cast<eState>(nState); }
 	inline void SetEState(const eState& nState){ cState = nState; }
-	inline eState SetEState(void)				 { return cState; }
+	inline eState GetEState(void)				 { return cState; }
 
 	void Update()
 	{
@@ -28,9 +28,15 @@ public:
 		case INTRO:
 			//Intro code
 			break;
-		case MAINMENU: break;
-		case LEVELS: break;
-		case PLAYING: break;
+		case MAINMENU:
+			//Start screen
+			break;
+		case LEVELS:
+			//Level select
+			break;
+		case PLAYING:
+			//User has control of Player
+			break;
 		default: break;
 		}
 
