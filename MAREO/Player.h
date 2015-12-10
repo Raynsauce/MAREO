@@ -27,18 +27,8 @@ protected:
 
 class Oscillate {
 public:
-	Oscillate()
-	{
-		ixrs = new int;
-		ixps = new int;
-		*ixrs = -1;
-		*ixps = -1;
-	}
-	~Oscillate()
-	{
-		delete ixrs;
-		delete ixps;
-	}
+	Oscillate() : ixrs(new int),ixps(new int) { *ixrs = -1; *ixps = -1; }
+	~Oscillate(){	delete ixrs; delete ixps;	}
 	
 	inline int rrun()
 	{
@@ -71,11 +61,11 @@ private:
 
 class Player : protected Camera {
 public:
-	Player()
+
+	Player() : pRect(new SDL_Rect)
 	{
 		puts("[INFO] Player object construct");
-		rndrRect =	new SDL_Rect;
-		*rndrRect = {(WIDTH/2),(HEIGHT/2),WIDTH,HEIGHT};			//Defined starting position
+		*pRect = {(WIDTH/2),(HEIGHT/2)};			//Defined starting position
 
 		dirx = {};
 		diry = {};
@@ -86,20 +76,25 @@ public:
 		s_stand = IMG_LoadTexture(mainrndr,"assets\\mario\\s_stand.png");
 		s_run0 = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run0.png");
 		s_run1 = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run1.png");
-		if( SDL_QueryTexture(s_stand,nullptr,nullptr,&(rndrRect->w),&(rndrRect->h)) )	//If QueryTexture failed, print an error
+		if( SDL_QueryTexture(s_stand,nullptr,nullptr,&(pRect->w),&(pRect->h)) )	//If QueryTexture failed, print an error
 		{ std::cerr << "[ERR] QueryTexture FAILED: " << SDL_GetError() << std::endl; }
 		
-		*Camera::cProps = *rndrRect;	//set the value of cProps instead of pointer address
+		//set the value of cProps instead of pointer address
+		Camera::cProps->x = pRect->x;
+		Camera::cProps->y = pRect->y;
+		Camera::cProps->w = WIDTH;
+		Camera::cProps->h = HEIGHT;
 
 
 		SetPState(STAND | ALIVE);
+
 		std::cout << STAND << ", " << ALIVE << std::endl;
-		std::cout << ((STAND|ALIVE)) << std::endl;
+		std::cout << "Initial state: " << (STAND|ALIVE) << std::endl;
 	}
 	~Player()
 	{
 		puts("[INFO] Player object destruct");
-		delete rndrRect;
+		delete pRect;
 		SDL_DestroyTexture(s_stand);
 		SDL_DestroyTexture(s_run0);
 		SDL_DestroyTexture(s_run1);
@@ -110,39 +105,36 @@ public:
 		PlayerKeyMoves(key,mouse);
 
 		SDL_SetRenderDrawColor(mainrndr,255,0,255,255);
-		SDL_RenderDrawRects(mainrndr,rndrRect,1);
+		SDL_RenderDrawRects(mainrndr,pRect,1);
 		
 		SDL_SetRenderTarget(mainrndr,mainTex);
-		SDL_RenderCopy(mainrndr,s_stand,NULL,rndrRect);
+		SDL_RenderCopy(mainrndr,s_stand,NULL,pRect);
 	}
 
-	const enum {		//6 types of states -> 6 hex places (?)
-		STAND		= 0x000001, //different types of states don't interfere (in theory)
-		MOVE		= 0x000002,
-		STOP		= 0x000004,
-		THING		= 0x000008,
+	const enum pState {		//6 types of states -> 6 hex places (?)
+		STAND, //Change to better way to change states
+		MOVE,
+		STOP,
+		THING,
 		
-		WALK		= 0x000010, //Movement
-		RUN			= 0x000020,
-		SPRINT		= 0x000030,
-		TURN		= 0x000040,
-		JUMP		= 0x000050,
-		SWIM		= 0x000060,
+		WALK, //Movement
+		RUN	,
+		SPRINT,
+		TURN,
+		JUMP,
+		SWIM,
 
-		HOLD		= 0x000100, //Actions
-		KICK		= 0x000200,
+		HOLD, //Actions
+		KICK,
 
-		ALIVE		= 0x100000,
-		DEAD		= 0x200000,
+		ALIVE,
+		DEAD,
 	};
 
-	inline void SetPState(const int& newState)
-	{
-		pState = (pState | newState);
-	}
-	inline void GetPState(void){
-		std::cout << pState << std::endl;
-	}
+	inline void SetPState(const int&	newState){ cState = static_cast<pState>(cState | newState); }
+	inline void SetPState(const pState& newState){ cState = static_cast<pState>(cState | newState); }
+	inline pState GetPState(void){	return cState;	}
+	//inline pState operator+(const pState bor) { pState temp = bor; return temp; }
 
 	inline void PlayerKeyMoves(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
 	{
@@ -175,12 +167,12 @@ public:
 		#pragma region PlayerMoves
 		switch(Sprinting){  case true: Vel = pSpeed(); break; default: Vel = Run(); break; }
 
-		switch(diry.movul){ case true: rndrRect->y -= Vel; break; default: break; }	/* Moved up */
-		switch(diry.movdr){ case true: rndrRect->y += Vel; break; default: break; }	/* Moved down */
-		switch(dirx.movul){ case true: rndrRect->x -= Vel; break; default: break; }	/* Moved left */
-		switch(dirx.movdr){ case true: rndrRect->x += Vel; break; default: break; }	/* Moved right */
-		switch(Center){ case true: rndrRect->x = (WIDTH/2),rndrRect->y = (HEIGHT/2); break; default: break; }
-		switch(MouseC){ case true: SDL_GetMouseState(&(rndrRect->x),&(rndrRect->y)); break; default: break; }
+		switch(diry.movul){ case true: pRect->y -= Vel; break; default: break; }	/* Moved up */
+		switch(diry.movdr){ case true: pRect->y += Vel; break; default: break; }	/* Moved down */
+		switch(dirx.movul){ case true: pRect->x -= Vel; break; default: break; }	/* Moved left */
+		switch(dirx.movdr){ case true: pRect->x += Vel; break; default: break; }	/* Moved right */
+		switch(Center){ case true: pRect->x = (WIDTH/2),pRect->y = (HEIGHT/2); break; default: break; }
+		switch(MouseC){ case true: SDL_GetMouseState(&(pRect->x),&(pRect->y)); break; default: break; }
 		#pragma endregion
 	}
 private:
@@ -191,25 +183,17 @@ private:
 	bool MouseC = false;
 
 	Oscillate osc;
+
 	int Walk;
-	inline int Run()	//Mario's RUNNING speed oscillates (36, 35, 36, 35, 37) --- AVG = 35.8;
-	{
-		return osc.rrun();
-	}
-	inline int pSpeed()	//Mario's SPRINTING speed also oscillates (48, 47, 48, 47, 49) --- AVG = 47.8
-	{
-		return osc.prun();
-	}
-
-	
-
-	int Vel;	/* gets converted to int anyway */
+	inline int Run()	{ return osc.rrun(); } //Mario's RUNNING speed oscillates (36, 35, 36, 35, 37) --- AVG = 35.8;
+	inline int pSpeed() { return osc.prun(); } //Mario's SPRINTING speed also oscillates (48, 47, 48, 47, 49) --- AVG = 47.8
+	int Vel;
 
 	SDL_Texture* s_stand;
 	SDL_Texture* s_run0;
 	SDL_Texture* s_run1;
 protected:
-	int pState;
+	pState cState;
 public:
-	SDL_Rect* rndrRect;
+	SDL_Rect* pRect;
 };

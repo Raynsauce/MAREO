@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "Main.h"
-#include "Entities.h"
+#include "Player.h"
 
 int main(int argv, char** argc)
 {	
@@ -11,7 +11,7 @@ int main(int argv, char** argc)
 	Engine SMW;
 	Player Mario;
 
-	int otherframe = 0;
+	int oframe = 0;
 
 	for(; SMW.mEvent->quit.type != SDL_QUIT; SDL_PollEvent(SMW.mEvent))
 	{
@@ -24,11 +24,13 @@ int main(int argv, char** argc)
 		SMW.Update();
 		#pragma endregion
 
-		//if(otherframe >= 15){ Mario.GetPState(); otherframe = 0; } else { otherframe++;	}
+		if(oframe >= 30){ std::cout << "Engine State: " << Mario.GetPState()<< "\n\n" 
+									<< "Player State: " << SMW.GetPState()	<< "\n"
+									<< std::endl; oframe = 0; } else { oframe++; }
+
 		if((SMW.mEvent->key.type == SDL_KEYDOWN) && (SMW.mEvent->key.keysym.sym == SDLK_ESCAPE)){ SMW.mEvent->quit.type = SDL_QUIT; }
 	}
 
 	SDL_Quit();
 	return 0;
 }
-

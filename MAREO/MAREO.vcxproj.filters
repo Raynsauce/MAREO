@@ -29,13 +29,13 @@
     <ClInclude Include="stdafx.h">
       <Filter>Precompiled</Filter>
     </ClInclude>
-    <ClInclude Include="Entities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Main.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="GameEngine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
