@@ -8,34 +8,29 @@ public:
 	{
 		puts("[INFO] Engine construct");
 		SDL_PollEvent(mEvent);
-		SetPState(INTRO);
+		SetEState(INTRO);
 	}
 	~Engine()
 	{
 		delete mEvent;
 	}
 
-	const enum eState {
-		INTRO,
-		MAINMENU,
-		LEVELS,
-		PLAYING
-	};
+	const enum eState { INTRO, MAINMENU, LEVELS, PLAYING };
 	
-	inline void SetPState(const int& newState)	 { cState = static_cast<eState>(newState); }
-	inline void SetPState(const eState& newState){ cState = newState; }
-	inline eState GetPState(void)				 { return cState; }
+	inline void SetEState(const int& nState)	 { cState = static_cast<eState>(nState); }
+	inline void SetEState(const eState& nState){ cState = nState; }
+	inline eState SetEState(void)				 { return cState; }
 
 	void Update()
 	{
 		switch(cState)
 		{
-		case Engine::INTRO:
-
+		case INTRO:
+			//Intro code
 			break;
-		case Engine::MAINMENU: break;
-		case Engine::LEVELS: break;
-		case Engine::PLAYING: break;
+		case MAINMENU: break;
+		case LEVELS: break;
+		case PLAYING: break;
 		default: break;
 		}
 

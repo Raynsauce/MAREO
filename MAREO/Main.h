@@ -1,7 +1,7 @@
 #pragma once
 
-#define WIDTH 1280
-#define HEIGHT 720
+#define WIDTH 1152
+#define HEIGHT 648
 
 inline void InitSDL(){
 	std::ios::sync_with_stdio( false );
