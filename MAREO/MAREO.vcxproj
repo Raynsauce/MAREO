@@ -21,6 +21,8 @@
     <ClInclude Include="Player.h" />
     <ClInclude Include="GameEngine.h" />
     <ClInclude Include="Main.h" />
+    <ClInclude Include="RDL.h" />
+    <ClInclude Include="RTypes.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -10,7 +10,6 @@ protected:
 		bool movdr; ///move down,right
 	};
 };
-
 class Camera : protected Entity {
 public:
 	Camera(){
@@ -24,7 +23,6 @@ public:
 protected:
 	SDL_Rect* cProps;
 };
-
 class Oscillate {
 public:
 	Oscillate() : ixrs(new int),ixps(new int) { *ixrs = -1; *ixps = -1; }
@@ -105,7 +103,7 @@ public:
 		PlayerKeyMoves(key,mouse);
 
 		SDL_SetRenderDrawColor(mainrndr,255,0,255,255);
-		SDL_RenderDrawRects(mainrndr,pRect,1);
+		//SDL_RenderDrawRects(mainrndr,pRect,1);
 		
 		SDL_SetRenderTarget(mainrndr,mainTex);
 		SDL_RenderCopy(mainrndr,s_stand,NULL,pRect);
@@ -128,13 +126,11 @@ public:
 		KICK,
 
 		ALIVE,
-		DEAD,
+		DEAD
 	};
-
-	inline void SetPState(const int&	newState){ cState = static_cast<pState>(cState | newState); }
-	inline void SetPState(const pState& newState){ cState = static_cast<pState>(cState | newState); }
+	inline void SetPState(const pState& newState){ cState |= (newState); }
 	inline pState GetPState(void){	return cState;	}
-	//inline pState operator+(const pState bor) { pState temp = bor; return temp; }
+	
 
 	inline void PlayerKeyMoves(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
 	{

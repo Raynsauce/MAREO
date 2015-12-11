@@ -18,6 +18,8 @@ int main(int argv, char** argc)
 		//Background updates
 		//Enemy updates
 		//Item updates
+		fillEllipse(mainrndr,WIDTH/2,HEIGHT/2,64,64, 128,72,255,255);
+
 		Mario.Update(SMW.mEvent->key,SMW.mEvent->button);
 
 		#pragma region Frame Update

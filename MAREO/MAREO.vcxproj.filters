@@ -16,6 +16,9 @@
     <Filter Include="Precompiled">
       <UniqueIdentifier>{1aa32d67-a74e-45b3-bfb5-195f5fe847c9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\RGL-RDL">
+      <UniqueIdentifier>{1e114e6f-74c2-4cb7-921c-6e3d251737aa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -37,6 +40,12 @@
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RDL.h">
+      <Filter>Header Files\RGL-RDL</Filter>
+    </ClInclude>
+    <ClInclude Include="RTypes.h">
+      <Filter>Header Files\RGL-RDL</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
