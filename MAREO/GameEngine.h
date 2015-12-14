@@ -12,6 +12,7 @@ public:
 	}
 	~Engine()
 	{
+		puts("[INFO] Engine destruct");
 		delete mEvent;
 	}
 
@@ -21,7 +22,7 @@ public:
 	inline void SetEState(const eState& nState){ cState = nState; }
 	inline eState GetEState(void)				 { return cState; }
 
-	void Update()
+	inline void Update()
 	{
 		switch(cState)
 		{

@@ -33,6 +33,7 @@ int main(int argv, char** argc)
 		if((SMW.mEvent->key.type == SDL_KEYDOWN) && (SMW.mEvent->key.keysym.sym == SDLK_ESCAPE)){ SMW.mEvent->quit.type = SDL_QUIT; }
 	}
 
+	IMG_Quit();
 	SDL_Quit();
 	return 0;
 }
