@@ -26,8 +26,8 @@ int main(int argv, char** argc)
 		SMW.Update();
 		#pragma endregion
 
-		if(oframe >= 30){ std::cout << "Engine State: " << Mario.GetPState()<< "\n\n" 
-									<< "Player State: " << SMW.GetEState()	<< "\n"
+		if(oframe >= 30){ std::cout << "Engine State: " << Mario.GetState()<< "\n\n" 
+									<< "Player State: " << SMW.GetState()	<< "\n"
 									<< std::endl; oframe = 0; } else { oframe++; }
 
 		if((SMW.mEvent->key.type == SDL_KEYDOWN) && (SMW.mEvent->key.keysym.sym == SDLK_ESCAPE)){ SMW.mEvent->quit.type = SDL_QUIT; }

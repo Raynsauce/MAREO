@@ -8,7 +8,7 @@ public:
 	{
 		puts("[INFO] Engine construct");
 		SDL_PollEvent(mEvent);
-		SetEState(INTRO);
+		SetState(INTRO);
 	}
 	~Engine()
 	{
@@ -16,20 +16,22 @@ public:
 		delete mEvent;
 	}
 
-	const enum eState { INTRO, MAINMENU, LEVELS, PLAYING };
+	const enum eState { SPLASH, INTRO, MAINMENU, LEVELS, PLAYING };
 	
-	inline void SetEState(const int& nState)	 { cState = static_cast<eState>(nState); }
-	inline void SetEState(const eState& nState){ cState = nState; }
-	inline eState GetEState(void)				 { return cState; }
+	inline void SetState(const int& nState)		{ cState = static_cast<eState>(nState); }
+	inline void SetState(const eState& nState)  { cState = nState; }
+	inline eState GetState(void)				{ return cState; }
 
 	inline void Update()
 	{
-		switch(cState)
-		{
+		switch(cState){
+		case SPLASH:	//"Nintendo" splash screen
+
+			break;
 		case INTRO:	//Intro code
 			
 			break;
-		case MAINMENU: //Start screen
+		case MAINMENU: //"Start"/"File select" screen
 			
 			break;
 		case LEVELS: //Level select

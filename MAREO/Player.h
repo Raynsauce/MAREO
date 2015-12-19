@@ -84,7 +84,7 @@ public:
 		Camera::cProps->h = HEIGHT;
 
 
-		SetPState(STAND | ALIVE);
+		SetState(STAND | ALIVE);
 
 		std::cout << STAND << ", " << ALIVE << std::endl;
 		std::cout << "Initial state: " << (STAND|ALIVE) << std::endl;
@@ -128,8 +128,8 @@ public:
 		ALIVE,
 		DEAD
 	};
-	inline void SetPState(const pState& newState){ cState |= (newState); }
-	inline pState GetPState(void){	return cState;	}
+	inline void SetState(const pState& newState){ cState |= (newState); }
+	inline pState GetState(void){	return cState;	}
 	
 
 	inline void PlayerKeyMoves(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
