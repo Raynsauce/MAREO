@@ -4,7 +4,7 @@
 #define HEIGHT 648
 
 inline void InitSDL(){
-	std::ios::sync_with_stdio( false );
+	std::ios::sync_with_stdio(false);
 	if(SDL_Init(SDL_INIT_VIDEO | SDL_INIT_EVENTS | SDL_INIT_TIMER) != 0){ std::cerr << "SDL_Init failure! Error: " << SDL_GetError() << std::endl; }
 	if(IMG_Init(IMG_INIT_PNG) == 0){ std::cerr << "IMG_Init failure! Error: " << IMG_GetError() << std::endl; }
 }

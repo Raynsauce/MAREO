@@ -28,16 +28,16 @@ public:
 		case SPLASH:	//"Nintendo" splash screen
 
 			break;
-		case INTRO:	//Intro code
+		case INTRO:		//Intro code
 			
 			break;
-		case MAINMENU: //"Start"/"File select" screen
+		case MAINMENU:	//"Start"/"File select" screen
 			
 			break;
-		case LEVELS: //Level select
+		case LEVELS:	//Level select
 			
 			break;
-		case PLAYING: //User has control of Player
+		case PLAYING:	//User has control of Player
 			
 			break;
 		default: break;

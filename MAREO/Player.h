@@ -60,31 +60,35 @@ private:
 class Player : protected Camera {
 public:
 
-	Player() : pRect(new SDL_Rect)
+	Player(Engine* engine) : pRect(new SDL_Rect)
 	{
 		puts("[INFO] Player object construct");
-		*pRect = {(WIDTH/2),(HEIGHT/2)};			//Defined starting position
+		*(this->pRect) = {(WIDTH/2),(HEIGHT/2)};			//Defined starting position
 
-		dirx = {};
-		diry = {};
+		this->dirx = {};
+		this->diry = {};
 		
 		Vel = Run();
 		Sprinting = false;
 
-		s_stand = IMG_LoadTexture(mainrndr,"assets\\mario\\s_stand.png");
-		s_run0 = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run0.png");
-		s_run1 = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run1.png");
-		if( SDL_QueryTexture(s_stand,nullptr,nullptr,&(pRect->w),&(pRect->h)) )	//If QueryTexture failed, print an error
+		(this->textures)[0] = IMG_LoadTexture(mainrndr,"assets\\mario\\s_stand.png");
+		(this->textures)[1] = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run0.png");
+		(this->textures)[2] = IMG_LoadTexture(mainrndr,"assets\\mario\\s_run1.png");
+		///this->s_stand = &textures[0];
+		///this->s_run0 = &textures[1];
+		///this->s_run1 = &textures[2];
+		
+		if( SDL_QueryTexture(textures[0],nullptr,nullptr,&(pRect->w),&(pRect->h)) )	//If QueryTexture failed, print an error
 		{ std::cerr << "[ERR] QueryTexture FAILED: " << SDL_GetError() << std::endl; }
 		
 		//set the value of cProps instead of pointer address
-		Camera::cProps->x = pRect->x;
-		Camera::cProps->y = pRect->y;
-		Camera::cProps->w = WIDTH;
-		Camera::cProps->h = HEIGHT;
+		this->cProps->x = this->pRect->x;
+		this->cProps->y = this->pRect->y;
+		this->cProps->w = WIDTH;
+		this->cProps->h = HEIGHT;
 
 
-		SetState(STAND | ALIVE);
+		//SetState(STAND | ALIVE);
 
 		std::cout << STAND << ", " << ALIVE << std::endl;
 		std::cout << "Initial state: " << (STAND|ALIVE) << std::endl;
@@ -93,9 +97,9 @@ public:
 	{
 		puts("[INFO] Player object destruct");
 		delete pRect;
-		SDL_DestroyTexture(s_stand);
-		SDL_DestroyTexture(s_run0);
-		SDL_DestroyTexture(s_run1);
+		for(SDL_Texture* tex : textures){
+			SDL_DestroyTexture(tex);
+		}
 	}
 	
 	inline void Update(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
@@ -106,16 +110,19 @@ public:
 		//SDL_RenderDrawRects(mainrndr,pRect,1);
 		
 		SDL_SetRenderTarget(mainrndr,mainTex);
-		SDL_RenderCopy(mainrndr,s_stand,NULL,pRect);
+		SDL_RenderCopy(mainrndr,textures[0],NULL,pRect);
 	}
 
 	const enum pState {		//6 types of states -> 6 hex places (?)
-		STAND, //Change to better way to change states
+		ALIVE,
+		DEAD,
+		
+		STAND,
 		MOVE,
 		STOP,
 		THING,
 		
-		WALK, //Movement
+		WALK, //Movement, should invoke MOVE
 		RUN	,
 		SPRINT,
 		TURN,
@@ -124,13 +131,22 @@ public:
 
 		HOLD, //Actions
 		KICK,
-
-		ALIVE,
-		DEAD
+		FLAME
 	};
-	inline void SetState(const pState& newState){ cState |= (newState); }
-	inline pState GetState(void){	return cState;	}
-	
+
+	inline void PushState(const pState& newState)
+	{
+		int hasState = 0;
+		for(auto& idx : cStates)
+		{
+			if(cStates[idx] == newState){ hasState = idx; };
+		}
+		if(hasState != 0){ cStates.push_back(newState); }
+	}
+	inline pState PopState(const pState& State)
+	{
+		auto it = std::find(cStates.begin(), cStates.end(), State);
+	}
 
 	inline void PlayerKeyMoves(SDL_KeyboardEvent& key,SDL_MouseButtonEvent& mouse)
 	{
@@ -155,7 +171,7 @@ public:
 			case SDLK_RETURN: Center = 0;	 break;
 			default: break;
 			} break;
-		case SDL_MOUSEBUTTONDOWN:	switch(mouse.button){ case SDL_BUTTON_LEFT: MouseC = true; break; default: break; } break;
+		case SDL_MOUSEBUTTONDOWN:	switch(mouse.button){ case SDL_BUTTON_LEFT: MouseC =  true; break; default: break; } break;
 		case SDL_MOUSEBUTTONUP:		switch(mouse.button){ case SDL_BUTTON_LEFT: MouseC = false; break; default: break; } break;
 		default: break;
 		}
@@ -185,11 +201,13 @@ private:
 	inline int pSpeed() { return osc.prun(); } //Mario's SPRINTING speed also oscillates (48, 47, 48, 47, 49) --- AVG = 47.8
 	int Vel;
 
-	SDL_Texture* s_stand;
-	SDL_Texture* s_run0;
-	SDL_Texture* s_run1;
+	SDL_Texture* textures[3];
+	SDL_Texture** s_stand;
+	SDL_Texture** s_run0;
+	SDL_Texture** s_run1;
 protected:
-	pState cState;
+	std::vector<pState> cStates;
+	//std::vector<pState *>::iterator stateit;
 public:
 	SDL_Rect* pRect;
 };
